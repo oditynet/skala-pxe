@@ -1,0 +1,29 @@
+---
+- name: Configure virtuozzo cs servers and clients
+  hosts: virtuozzo7
+  tasks:
+
+#  - name: snmpd.local.conf
+#    template:
+#      src: templates/snmpd.j2
+#      dest: /etc/snmp/snmpd.local.conf
+#      owner: root
+#      group: root
+#      mode: 644
+  - name: start cpufeatures.timer
+    systemd: name=cpufeatures.timer state=started enabled=True
+  - name: join shaman cluster
+    shell: "hastart -c {{ my_cluster_name }} -n 192.168.1.0/255.255.255.0"
+#    shell: "shaman set-roles VM:QEMU,CT:VZ7,ISCSI"
+#    shell: "shaman -c {{ my_cluster_name }} join"
+  - name: enable HA services
+    systemd:
+      name: "{{ item }}"
+      state: started
+      enabled: True
+    with_items:
+      - snmpd.service
+      - shaman.service
+      - pdrs.service
+  - name: shaman set roles
+    shell: "shaman set-roles VM:QEMU,CT:VZ7,ISCSI"

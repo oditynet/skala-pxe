@@ -1,0 +1,12 @@
+---
+- name: license install
+  hosts: virtuozzo7
+  tasks:
+
+- hosts: virtuozzo7
+  tasks:
+  - name: Stop test CPU
+#    shell: "kill $(ps aux|grep cat|grep -v 'grep'|cut -d ' ' -f2)"
+    shell: "killall cat"
+
+

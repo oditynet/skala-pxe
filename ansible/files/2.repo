@@ -1,0 +1,55 @@
+# Rosplatforma repo file
+#
+# The mirror system uses the connecting IP address of the client and the
+# update status of each mirror to pick mirrors that are updated to and
+# geographically close to the client.  You should use this for RosPlatforma/R-Virtualization
+# updates unless you are manually picking other mirrors.
+#
+[rosplatforma-base]
+name=RosPlatforma - Base
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization-linux/mirrorlist/mirrors-7-os
+#baseurl=http://updates.rosplatforma.ru/r-virtualization-linux/7/$basearch/os/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPLATFORM_GPG_KEY
+
+#released updates
+[rosplatforma-updates]
+name=RosPlatforma - Updates
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization-linux/mirrorlist/mirrors-7-updates
+#baseurl=http://updates.rosplatforma.ru/r-virtualization-linux/7/$basearch/updates/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPLATFORM_GPG_KEY
+
+[rosplatforma-base-debuginfo]
+name=RosPlatforma - Base Debug
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization-linux/mirrorlist/mirrors-7-os-debug
+#baseurl=http://updates.rosplatforma.ru/r-virtualization-linux/7/$basearch/debug/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPLATFORM_GPG_KEY
+
+[rosplatforma-updates-debuginfo]
+name=RosPlatforma - Updates Debug
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization-linux/mirrorlist/mirrors-7-updates-debug
+#baseurl=http://updates.rosplatforma.ru/r-virtualization-linux/7/$basearch/debug_updates/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPLATFORM_GPG_KEY
+
+[rosplatforma-base-factory]
+name=RosPlatforma - Base Factory
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization-linux/mirrorlist/mirrors-7-factory
+#baseurl=http://updates.rosplatforma.ru/r-virtualization-linux/7/$basearch/factory/
+priority=90
+enabled=0
+gpgcheck=0
+
+[rosplatforma-base-factory-debuginfo]
+name=RosPlatforma - Base Factory debug packages
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization-linux/mirrorlist/mirrors-7-factory-debug
+#baseurl=http://updates.rosplatforma.ru/r-virtualization-linux/7/$basearch/factory-debug/
+priority=90
+enabled=0
+gpgcheck=0

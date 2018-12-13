@@ -1,0 +1,33 @@
+[r-virtualization-os]
+name=R-Virtualization
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization/mirrorlists/7.0/releases-os.mirrorlist
+#baseurl=http://updates.rosplatforma.ru/r-virtualization/releases/7.0/x86_64/os/
+enabled=1
+gpgcheck=1
+priority=50
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-R-Virtualization-7
+
+[r-virtualization-updates]
+name=R-Virtualization Updates
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization/mirrorlists/7.0/updates-os.mirrorlist
+#baseurl=http://updates.rosplatforma.ru/r-virtualization/updates/7.0/x86_64/os/
+enabled=1
+gpgcheck=1
+priority=50
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-R-Virtualization-7
+
+[r-virtualization-os-debuginfo]
+name=R-Virtualization os Debug packages
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization/mirrorlists/7.0/releases-debug.mirrorlist
+#baseurl=http://updates.rosplatforma.ru/r-virtualization/releases/7.0/x86_64/debug/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-R-Virtualization-7
+
+[r-virtualization-updates-debuginfo]
+name=R-Virtualization updates Debug packages
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization/mirrorlists/7.0/updates-debug.mirrorlist
+#baseurl=http://updates.rosplatforma.ru/r-virtualization/updates/7.0/x86_64/debug/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-R-Virtualization-7

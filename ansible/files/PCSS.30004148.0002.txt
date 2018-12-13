@@ -1,0 +1,23 @@
+========================================================================
+== This file contains a license for the Virtuozzo Storage product.    ==
+== Please visit http://www.virtuozzo.com for more information about   ==
+== Virtuozzo Storage and Virtuozzo.                                   ==
+== If you have questions or suggestions, contact us at                ==
+== sales@virtuozzo.com                                                ==
+
+=========================== Start of license ===========================
+OCW4GGes6BRNkElY9+7DyaF1w8LPCOKtbl5EHGNNwN0+kiQYg4G+y92/D3I40v4DAgxJ5b8v
+qtW7md/njsV8LFoBhw48QTGR+ci/kihY2YYKG56RDkmF4tlg8KlS5xw67ai98tmgOwOzcNIN
+CEd/ocJoEtBroRmCFxFPiDVH0LoJBBDQWQum8ngDqf052FPHwjnnuKiFK6Ta4Zw/mS5xpmIB
+kmNl/K6r53FsSIGtoMkX0W1N4o0Dbpv48fm4yZKDd6J16XRivULeotYDFwPNGJ7ORvSVp4kb
+DziR3RzuNPp5tGFMBjrREPnG2QnN348QSwqM3x7/h19wisezOXjh1ae9U+vkPZCcGB0sCxDY
+tnB+PpeItXZ4fQdFRemp6c1D9mkAdTOU+BsvVmL4C21HqlSvhY+b9FuIRyhtF8v5I6B6xsQe
+084SZMeJLL4X6VEuYMhrvU4D+zeiqfnkKIZ7/kFbbmfekt98IFn2sqBtI12SnnMmz6TC1hbR
+qhNyhsJPubQrW1252zwJ4uvl5gfk73J+dMygcF3k4nUiXG2FZ5IqdExcEJYkKWOMPcmVCwST
+5ACQ34pULtutATwBUVsGG6QrKe9Uymhx3PuelI5JQ22UWHncC0NYutGJK4w4GpjfsR3LOHvb
+1Y4mukqbi++mYVYRaNYsSNVPXGOgiFUjWwJXoqI041dtDjnrroq7k77yFzfmzT8RIXqDvdT1
+PZye5D1GympV58v5V0/Pqa1jkdhg/srygQPDQtUEt8xRNM/LSwTDOXOZqhibR/4g6ETwYa4r
+ugak2zIJpKinprKaAs36dEbaekp1I406tukx8BjQDVwd8BN1R2JxENU+JTfOpxaQzVM5QByK
+gDqKoG4GO3/wngBOoNmZeyQfbLgNCRSQCAoZcR3yVt034DF0cuvP9SBkK9uphPFkbWCjIHAY
+bDkgv+6JvYafUZTl1cykIWYDqK9n02t6OPiZwAU=
+============================ End of license ============================

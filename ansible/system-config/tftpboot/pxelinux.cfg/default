@@ -1,0 +1,9 @@
+default menu.c32
+prompt 0
+timeout 60
+ontimeout VZ
+menu title Virtuozzo Boot Menu
+label VZ
+     menu label Install Virtuozzo 7
+     kernel vmlinuz
+     append initrd=initrd.img ip=dhcp ks=http://10.31.0.150/ks/ks-vz.cfg

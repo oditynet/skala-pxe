@@ -1,0 +1,14 @@
+---
+- name: Configure virtuozzo cs servers and clients
+  hosts: virtuozzo7
+  tasks:
+
+  - name: copy memtest
+    copy:
+      src: memtester.rpm
+      dest: "/root"
+      #state: directory
+                        
+#    tasks:
+#  - shell: "prlsrvctl net add inet --type bridged -i bond0.31"
+  - shell: yum -y localinstall /root/memtester.rpm

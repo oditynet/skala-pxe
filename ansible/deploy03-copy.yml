@@ -1,0 +1,21 @@
+---
+- name: Configure virtuozzo cs servers and clients
+  hosts: virtuozzo7[0]
+  tasks:
+
+  - name: copy 2 VM
+    copy:
+      src: vm/
+      dest: "/vstorage/{{ my_cluster_name }}"
+      #state: directory
+                        
+#    tasks:
+#  - shell: "prlsrvctl net add inet --type bridged -i bond0.31"
+  - shell: ln -s 5 /vstorage/{{ my_cluster_name }}/eeefcccb-00aa-4882-95eb-2b32426b94b0/.ve.layout
+  - shell: ln -s 5 /vstorage/{{ my_cluster_name }}/2edff7fb-9a12-4c03-a3d6-761494603168/.ve.layout
+  - shell: prlctl register /vstorage/{{ my_cluster_name }}/eeefcccb-00aa-4882-95eb-2b32426b94b0
+  - shell: prlctl register /vstorage/{{ my_cluster_name }}/2edff7fb-9a12-4c03-a3d6-761494603168
+  - shell: prlctl set va-mn --ha-enable yes
+  - shell: prlctl set vstorage-ui --ha-enable yes
+  - shell: prlctl start vstorage-ui
+  - shell: prlctl start va-mn

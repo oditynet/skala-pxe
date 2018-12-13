@@ -1,0 +1,229 @@
+# Install Virtuozzo
+cmdline
+
+install 
+
+url --url http://192.168.115.10/vz
+
+lang en_US.UTF-8
+
+keyboard --vckeymap=us --xlayouts='us'
+
+%include /tmp/part-include
+
+raid /boot --level=1 --fstype=ext4 --device=md0 raid.01 raid.02
+raid /boot/efi --level=1 --fstype=efi --device=md1 raid.11 raid.12
+raid pv.1 --level=1 --device=md2 raid.21 raid.22
+
+volgroup virtuozzo pv.1
+logvol /vz --vgname=virtuozzo --size=44360 --name=vz --fstype=ext4
+logvol / --vgname=virtuozzo --size=564960 --name=root --fstype=ext4
+logvol swap --vgname=virtuozzo --size=68720 --name=swap --fstype=swap
+
+cep --disagree
+
+network --bootproto=dhcp
+
+# up2date
+
+rootpw root
+
+auth --enableshadow --passalgo=sha512
+
+selinux --disabled
+
+services --disabled="chronyd"
+
+timezone Europe/Moscow --isUtc --nontp
+
+readykernel --disable-autoupdate
+
+reboot
+
+key "test"
+
+%packages
+@^cloudserver
+@base
+@core
+@ps
+@qemu
+@readykernel
+@templates
+@vz
+kexec-tools
+net-snmp
+net-snmp-libs
+net-snmp-agent-libs
+vstorage-metadata-server
+vstorage-ctl
+vstorage-libs-shared
+vstorage-chunk-server
+vstorage-iscsi
+vstorage-client
+shaman
+cpupools
+pyparted
+pstorage-scsi-target-utils
+arptables
+xtables_wdog_tmo
+rmond
+pdrs
+ledmon
+ipmitool
+OpenIPMI-modalias
+
+%end
+
+%addon com_virtuozzo_readykernel
+
+%end
+%addon com_virtuozzo_eula
+
+%end
+%addon com_virtuozzo_vstorage
+
+%end
+%addon com_virtuozzo_license
+
+%end
+%addon com_redhat_kdump --enable --reserve-mb='auto'
+
+%end
+
+
+%anaconda
+pwpolicy root --minlen=6 --minquality=50 --notstrict --nochanges --notempty
+pwpolicy user --minlen=6 --minquality=50 --notstrict --nochanges --notempty
+pwpolicy luks --minlen=6 --minquality=50 --notstrict --nochanges --notempty
+%end
+
+%pre
+
+#!/bin/sh
+
+set -x -v
+exec 1>/root/kspre-vz.log 2>&1
+HDD1=/dev/disk/by-path/pci-0000:00:1f.2-ata-1.0
+HDD2=/dev/disk/by-path/pci-0000:00:1f.2-ata-2.0
+
+HDDS=$HDD1,$HDD2
+
+cat << EOF > /tmp/part-include
+#partition scheme
+zerombr
+ignoredisk --only-use=$HDDS
+clearpart --drives=$HDDS --all --initlabel --disklabel=gpt
+bootloader --append=" crashkernel=auto" --location=mbr --driveorder=$HDDS
+
+# /boot
+part raid.01 --ondisk=$HDD1 --asprimary --size=1074
+part raid.02 --ondisk=$HDD2 --asprimary --size=1074
+
+# /boot/efi
+part raid.11 --ondisk=$HDD1 --asprimary --size=1074
+part raid.12 --ondisk=$HDD2 --asprimary --size=1074
+
+# all other
+part raid.21 --ondisk=$HDD1 --asprimary --size=908056
+part raid.22 --ondisk=$HDD2 --asprimary --size=908056
+EOF
+
+
+%end
+
+%post
+
+#!/bin/sh
+
+set -x -v
+exec 1>/root/kspost-vz.log 2>&1
+
+LO=$(ip ad show | grep 192 | awk  'BEGIN { FS="[./]"}; {print $4-100}')
+
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-team0
+DEVICE=team0
+NAME=team0
+BOOTPROTO=none
+ONBOOT=yes
+USERCTL=no
+MTU=9216
+NETMASK=255.255.255.0
+IPADDR=192.168.101.$LO
+DEVICETYPE="Team"
+TEAM_CONFIG='{ "runner" : {  "name" : "lacp" }, "link_watch" : {  "name" : "ethtool" } }'
+EOF
+
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-ens1
+TYPE=Ethernet
+BOOTPROTO=none
+NAME=ens1
+DEVICE=ens1
+ONBOOT=yes
+MTU=9216
+DEVICETYPE="TeamPort"
+TEAM_MASTER="team0"
+TEAM_PORT_CONFIG='{ "prio" : -100 }'
+EOF
+
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-ens1d1
+TYPE=Ethernet
+BOOTPROTO=none
+NAME=ens1d1
+DEVICE=ens1d1
+ONBOOT=yes
+MTU=9216
+DEVICETYPE="TeamPort"
+TEAM_MASTER="team0"
+TEAM_PORT_CONFIG='{ "prio" : -100 }'
+EOF
+
+MINT=`ip link show | grep enp2 | grep "state UP" | cut -f2 -d':'| tr -d " "`
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-$MINT
+TYPE=Ethernet
+BOOTPROTO=none
+DEVICE=$MINT
+NAME=$MINT
+ONBOOT=yes
+USERCTL=no
+NETMASK=255.255.255.0
+IPADDR=192.168.115.$((LO+100))
+EOF
+
+#  preparing disks
+
+HDDS=$(lsblk -ld -o NAME,ROTA,TRAN | grep sas | grep 1 | awk '{print $1}')
+SSDS=$(lsblk -ld -o NAME,ROTA,TRAN | grep sas | grep 0 | awk '{print $1}')
+CLUSTER=vz
+
+for i in $HDDS; do
+        /usr/libexec/vstorage/prepare_vstorage_drive /dev/${i} --noboot -y
+done
+
+for i in $SSDS; do
+        /usr/libexec/vstorage/prepare_vstorage_drive /dev/${i} --noboot --ssd -y
+done
+
+#  preparing mounts
+
+
+mkdir -p /vstorage/${CLUSTER}
+
+HDD_COUNT=0
+for i in $HDDS; do
+        mkdir -p /vstorage/${CLUSTER}-hdd${HDD_COUNT}
+        echo "UUID=$(blkid -o value -s UUID /dev/${i}1) /vstorage/${CLUSTER}-hdd${HDD_COUNT} ext4 defaults 1 2" >> /etc/fstab
+        HDD_COUNT=$((${HDD_COUNT}+1))
+done
+
+SSD_COUNT=0
+for i in $SSDS; do
+        mkdir -p /vstorage/${CLUSTER}-ssd${SSD_COUNT}
+        echo "UUID=$(blkid -o value -s UUID /dev/${i}1) /vstorage/${CLUSTER}-ssd${SSD_COUNT} ext4 defaults 1 2" >> /etc/fstab
+        SSD_COUNT=$((${SSD_COUNT}+1))
+done
+
+mkdir -p /root/.ssh
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCYNRzZjP7oHt18Zog1jVqFXWKYRIFQ3K5zesV8KUyjBH7MRM+U0E+y4ow5LLQ41oMkF0Fck8OWPaprHfFB7F02woIRmR5sZpz30NDXNyCE5bDok/LDYdayHAbFFrfbqgE9MAbd4qTs/wFvpffKKXeILnS11UQOlzgjRB81mor4O96UHdxWnk/1mohF3/nWJq0n65cfZGCrQoM6FeVWn+Mx4HANgXi0I7zMtXQ2dxSSK3N7xKVxzDzOXRrNg5t8/8pFsQs3qnDUypyd4gxl9+sRZA9hacMN7R1E84bDIXGLzIy78NS2M0/rwJ85UvGKEQLZtsMzTYkArSXV3F0NhqK/ mushrushu@thinkedge" >> /root/.ssh/authorized_keys
+
+%end

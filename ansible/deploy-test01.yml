@@ -1,0 +1,23 @@
+---
+- name: test 1
+# hosts: virtuozzo7
+# tasks:
+
+  hosts: virtuozzo7
+  tasks:
+  - name: copy test1
+    copy:
+     src: "{{ my_test1 }}"
+     dest: /root/{{ my_test1 }}
+     mode: a+x
+  - name: copy at_io_iops
+    copy:
+     src: "{{ my_test1_io }}"
+     dest: /root/{{ my_test1_io }}
+     mode: a+x
+  - name: test1
+    shell: "/root/{{ my_test1 }}"
+    register: cmdln
+  - debug: msg="{{ cmdln.stdout }}"
+
+

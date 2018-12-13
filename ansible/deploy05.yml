@@ -1,0 +1,24 @@
+---
+- name: license install
+  hosts: virtuozzo7
+  tasks:
+
+- hosts: virtuozzo7[0]
+  tasks:
+  - name: copy vstorage license
+    copy:
+     src: "{{ my_vstorage_lic }}"
+     dest: "/root/{{ my_vstorage_lic }}"
+  - name: install license
+    shell: "vstorage -c {{ my_cluster_name }} load-license -f /root/{{ my_vstorage_lic }}"
+
+- hosts: virtuozzo7[0:]
+  tasks:
+  - name: copy hosts license
+    copy:
+     src: "{{ host_lic }}"
+     dest: "/root/{{ host_lic }}"
+  - name: install license
+    shell: "vzlicload /root/{{ host_lic }}"
+
+

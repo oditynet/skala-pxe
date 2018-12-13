@@ -1,0 +1,7 @@
+[obsoleted_tmpls]
+name=R-Virtualization obsoleted EZ-templates
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization/mirrorlists/7.0/obsoleted_tmpls.mirrorlist
+#baseurl=http://updates.rosplatforma.ru/r-virtualization/obsoleted_tmpls/7.0/x86_64/os/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-R-Virtualization-7

@@ -1,0 +1,16 @@
+---
+- name: test 2
+# hosts: virtuozzo7
+# tasks:
+
+  hosts: virtuozzo7
+  tasks:
+  - name: copy test2
+    copy:
+     src: "{{ my_test2 }}"
+     dest: /root/{{ my_test2 }}
+     mode: a+x
+  - name: test2
+    shell: " /root/{{ my_test2 }}"
+
+

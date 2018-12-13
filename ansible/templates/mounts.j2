@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+#rm -f /etc/sysconfig/network-scripts/ifcfg-*
+
+#for i in /etc/sysconfig/network-scripts/vz_preserved-*; do mv -f $i $(echo $i | sed -e 's/vz_preserved-//'); done
+
+#mkdir -p /root/.ssh
+#echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCYNRzZjP7oHt18Zog1jVqFXWKYRIFQ3K5zesV8KUyjBH7MRM+U0E+y4ow5LLQ41oMkF0Fck8OWPaprHfFB7F02woIRmR5sZpz30NDXNyCE5bDok/LDYdayHAbFFrfbqgE9MAbd4qTs/wFvpffKKXeILnS11UQOlzgjRB81mor4O96UHdxWnk/1mohF3/nWJq0n65cfZGCrQoM6FeVWn+Mx4HANgXi0I7zMtXQ2dxSSK3N7xKVxzDzOXRrNg5t8/8pFsQs3qnDUypyd4gxl9+sRZA9hacMN7R1E84bDIXGLzIy78NS2M0/rwJ85UvGKEQLZtsMzTYkArSXV3F0NhqK/ mushrushu@thinkedge" >> /root/.ssh/authorized_keys
+
+HDDS=$(lsblk -S | grep E0C2 | awk '{print $1}')
+SSDS=$(lsblk -ld -o NAME,ROTA,TRAN | grep sata | grep 0 | awk '{print $1}')
+CLUSTER={{ my_cluster_name }}
+
+for i in $HDDS; do
+        /usr/libexec/vstorage/prepare_vstorage_drive /dev/${i} --noboot -y
+done
+
+for i in $SSDS; do
+        /usr/libexec/vstorage/prepare_vstorage_drive /dev/${i} --noboot --ssd -y
+done
+
+#  preparing mounts
+
+
+mkdir -p /vstorage/${CLUSTER}
+
+HDD_COUNT=0
+for i in $HDDS; do
+        mkdir -p /vstorage/${CLUSTER}-hdd${HDD_COUNT}
+        echo "UUID=$(blkid -o value -s UUID /dev/${i}1) /vstorage/${CLUSTER}-hdd${HDD_COUNT} ext4 defaults 1 2" >> /etc/fstab
+        HDD_COUNT=$((${HDD_COUNT}+1))
+done
+
+SSD_COUNT=0
+for i in $SSDS; do
+        mkdir -p /vstorage/${CLUSTER}-ssd${SSD_COUNT}
+        echo "UUID=$(blkid -o value -s UUID /dev/${i}1) /vstorage/${CLUSTER}-ssd${SSD_COUNT} ext4 defaults 1 2" >> /etc/fstab
+        SSD_COUNT=$((${SSD_COUNT}+1))
+done

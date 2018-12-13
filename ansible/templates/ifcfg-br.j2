@@ -1,0 +1,21 @@
+DEVICE={{ item.value.bridge }}
+TYPE=Bridge
+ONBOOT=yes
+BOOTPROTO=none
+NM_CONTROLLED=no
+IPV6INIT=no 
+STP=no
+DELAY=0
+NAME={{ item.value.bridge }}
+{% if item.value.address is defined %}
+IPADDR={{ item.value.address }}
+{% endif %}
+{% if item.value.prefix is defined %}
+PREFIX={{ item.value.prefix }}
+{% endif %}
+{% if item.value.gateway is defined %}
+GATEWAY={{ item.value.gateway }}
+DEFROUTE=yes
+{% else %}
+DEFROUTE=no
+{% endif %}

@@ -1,0 +1,18 @@
+---
+- name: test 4
+# hosts: virtuozzo7
+# tasks:
+
+  hosts: virtuozzo7
+  tasks:
+  - name: copy test4
+    copy:
+     src: "{{ my_test4 }}"
+     dest: /root/{{ my_test4 }}
+     mode: a+x
+  - name: test4 start
+    shell: "/root/{{ my_test4 }}"
+    register: cmdln
+  - debug: msg="{{ cmdln.stdout }}"
+
+

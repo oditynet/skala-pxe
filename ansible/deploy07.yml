@@ -1,0 +1,19 @@
+---
+- name: Configure virtuozzo cs servers and clients
+  hosts: virtuozzo7[0]
+  tasks:
+
+  - name: copy stress test VM
+    copy:
+      src: stress/
+      dest: "/vstorage/{{ my_cluster_name }}"
+      #state: directory
+                        
+#    tasks:
+#  - shell: "prlsrvctl net add inet --type bridged -i bond0.31"
+  - shell: tar xf /vstorage/{{ my_cluster_name }}/8f1c3121-047d-4b44-a45e-7a298eccd02d.tar -C /vstorage/{{ my_cluster_name }}
+#  - shell: ln -s 5 /vstorage/{{ my_cluster_name }}/2edff7fb-9a12-4c03-a3d6-761494603168/.ve.layout
+  - shell: prlctl register /vstorage/{{ my_cluster_name }}/8f1c3121-047d-4b44-a45e-7a298eccd02d
+  - shell: prlctl set win2012r2 --ha-enable yes
+  - shell: prlctl set win2012r2 --device-set net0 --ipadd 10.31.0.199/24 --gw 10.31.0.1 --nameserver 8.8.8.8
+  - shell: prlctl start win2012r2

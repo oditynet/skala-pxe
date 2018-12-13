@@ -1,0 +1,53 @@
+---
+- name: common tasks
+  hosts: virtuozzo7
+  tasks:
+
+  - name: configure bond0 vlans31
+    template:
+      src: templates/ifcfg-bond0-vlan.j2
+      dest: /etc/sysconfig/network-scripts/ifcfg-bond0.{{ item.value.vlan_id1 }}
+      owner: root
+      group: root
+      mode: 0644
+    with_dict: "{{ hostvars[inventory_hostname] }}"
+    when: item.value is not number and item.key | search("cluster_vlan_network")
+    notify: restart network
+  
+  - name: configure bond0 vlans11
+    template:
+      src: templates/ifcfg-bond0-vlan.j2
+      dest: /etc/sysconfig/network-scripts/ifcfg-bond0.{{ item.value.vlan_id2 }}
+      owner: root
+      group: root
+      mode: 0644
+    with_dict: "{{ hostvars[inventory_hostname] }}"
+    when: item.value is not number and item.key | search("cluster_vlan_network")
+    notify: restart network
+  
+
+  - name: chrony.conf
+    template:
+      src: templates/chrony.j2
+      dest: /etc/chrony.conf
+      owner: root
+      group: root
+      mode: 0644
+  - name: restart chrony
+    systemd: name=chronyd state=restarted enabled=yes
+
+  - name: setting hostname
+    shell: "hostnamectl set-hostname {{ inventory_hostname }}"
+    when: inventory_hostname != ansible_hostname
+
+  - name: build hosts file
+    lineinfile:
+      dest: /etc/hosts 
+      regexp: ".*{{ item }}.*"
+      line: "{{ hostvars[item].cluster_vlan_network.address }} {{ item }}" 
+      state: present
+    with_items: "{{ groups.all }}"
+
+  handlers:
+  - name: restart network
+    systemd: name=network state=restarted

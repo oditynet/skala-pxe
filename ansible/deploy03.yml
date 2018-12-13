@@ -1,0 +1,78 @@
+---
+- name: Configure Dir SD
+  hosts: virtuozzo7[0:]
+  tasks:
+  - name: create SD directory
+    file:
+      path: "/vstorage/{{ my_cluster_name }}"
+      state: directory
+
+  - name: create CSs
+    shell: "vstorage -c {{ my_cluster_name }} make-cs -r /vstorage/{{ my_cluster_name }}-{{ item.key }}/cs -j /vstorage/{{ my_cluster_name }}-{{ item.value }}/{{item.key }}-jrnl -s 10240"
+    with_dict: "{{ my_drive_mapping }}"
+
+  - name: restart CSd
+    systemd:
+      name: vstorage-csd.target
+      state: restarted
+
+  - name: add mount entry for cluster
+    lineinfile:
+      dest: /etc/fstab
+      regexp: "^vstorage://{{ my_cluster_name }}"
+      line:  "vstorage://{{ my_cluster_name }} /vstorage/{{ my_cluster_name }} fuse.vstorage _netdev,cache=/vstorage/{{ my_cluster_name }}-{{ my_ssd_cache }}/cache,cachesize=10240 0 0"
+
+  - name: mount all
+    shell: mount -a
+    args:
+      warn: no
+
+##  - name: remove /vz/private
+##    file:
+##      path: /vz/private
+##      state: absent 
+#  - name: remove /vz/vmprivate
+#    file:
+#      path: /vz/vmprivate
+#      state: absent 
+
+  - name: create private directory
+    file:
+      path: "/vstorage/{{ my_cluster_name }}/private"
+      state: directory
+  - name: create vmprivate directory
+    file:
+      path: "/vstorage/{{ my_cluster_name }}/vmprivate"
+      state: directory
+  - name: create private symlink
+    file:
+      src: "/vstorage/{{ my_cluster_name }}/private"
+      dest: /vz/private
+      state: link
+  - name: create vmprivate symlink
+    file:
+      src: "/vstorage/{{ my_cluster_name }}/vmprivate"
+      dest: /vz/vmprivate
+      state: link
+
+
+#  - name: snmpd.local.conf
+#    template:
+#      src: templates/snmpd.j2
+#      dest: /etc/snmp/snmpd.local.conf
+#      owner: root
+#      group: root
+#      mode: 644
+#  - name: start cpufeatures.timer
+#    systemd: name=cpufeatures.timer state=started enabled=True
+#  - name: join shaman cluster
+#    shell: "shaman -c {{ my_cluster_name }} join"
+#  - name: enable HA services
+#    systemd:
+#      name: "{{ item }}"
+#      state: started
+#      enabled: True 
+#    with_items:
+#      - snmpd.service
+#      - shaman.service
+#      - pdrs.service

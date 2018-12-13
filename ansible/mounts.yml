@@ -1,0 +1,16 @@
+---
+- name: common tasks
+  hosts: virtuozzo7
+  tasks:
+
+  - name:
+    template:
+      src: templates/mounts.j2
+      dest: /root/mounts.sh
+      mode: 0744
+
+  - name: invoke mounts.sh
+    shell: "/root/mounts.sh"
+
+  - name: mount em all
+    shell: mount -a

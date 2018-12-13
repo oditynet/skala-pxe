@@ -1,0 +1,14 @@
+default menu.c32
+prompt 0
+timeout 100
+
+menu title PXE Boot Menu
+label 1
+ menu label ^1) Boot from local drive
+COM32 chain.c32
+APPEND hd0 0
+
+ label 2
+menu label ^2) SKALA-R
+ kernel images/centos/isolinux/vmlinuz
+ append initrd=images/centos/isolinux/initrd.img ks=http://10.29.0.150/centos/ks.conf method=http://10.29.0.150/centos devfs=nomount ksdevice=eth1 #bond0 bond=bond0:eth1,eth0:mode=active-backup,primary=eth0

@@ -1,0 +1,38 @@
+---
+- name: common tasks
+  hosts: virtuozzo7
+  tasks:
+  - systemd:
+      name: firewalld
+      state: stopped
+      enabled: no
+      masked: yes
+  - name: configure iptables default rules
+    template:
+      src: templates/iptables.j2
+      dest: /etc/sysconfig/iptables
+      owner: root
+      group: root
+      mode: 0644
+  - systemd:
+      name: iptables
+      state: started
+      enabled: yes
+  - systemd:
+      name: libvirtd
+      state: restarted
+#  - shell: chronyc -a burst 4/4
+  - shell:  "vstorage set-attr -R /vstorage/{{ my_cluster_name }} replicas=3"
+#  - shell:  "prlsrvctl net add inet --type bridged -i bond0.31"
+
+#- name: test 1
+# hosts: virtuozzo7
+# tasks:
+#-  name test3 copy
+#   hosts: virtuozzo7
+ #o  tasks:
+  - name: copy test1
+    copy:
+      src: "{{ my_test3 }}"
+      dest: /usr/bin/{{ my_test3 }}
+      mode: a+x

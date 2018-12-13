@@ -1,0 +1,26 @@
+---
+- name: test 2
+  hosts: virtuozzo7[0]
+  tasks:
+  - name: copy test3
+    copy:
+     src: "{{ my_test3_s }}"
+     dest: /root/{{ my_test3_s }}
+     mode: a+x
+  - name: test3 start
+    shell: " /root/{{ my_test3_s }}"
+- hosts: virtuozzo7[1:]
+  serial: 1
+  tasks:
+  - name: copy test3
+    copy:
+     src: "{{ my_test3_c }}"
+     dest: /root/{{ my_test3_c }}
+     mode: a+x
+  - name: test3 start
+    shell: " /root/{{ my_test3_c }}"
+    register: cmdln
+  - debug: msg="{{ cmdln.stdout }}"
+     
+
+

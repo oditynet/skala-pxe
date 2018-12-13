@@ -1,0 +1,20 @@
+# These repositories are for internal use by developers only
+# Enable them on your own risk!!!
+
+[factory]
+name=Build Factory packages for Containers
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization/mirrorlists/7.0/factory-os.mirrorlist
+#baseurl=http://updates.rosplatforma.ru/r-virtualization/factory/x86_64/os/
+priority=49
+enabled=0
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-R-Virtualization-7
+
+[factory-debuginfo]
+name=Debug packages for Containers from Build Factory
+mirrorlist=http://updates.rosplatforma.ru/r-virtualization/mirrorlists/7.0/factory-debug.mirrorlist
+#baseurl=http://updates.rosplatforma.ru/r-virtualization/factory/x86_64/debug/
+priority=49
+enabled=0
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-R-Virtualization-7
