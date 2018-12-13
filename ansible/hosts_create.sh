@@ -22,7 +22,7 @@ echo "Summ hdd:"
 read hdd
 let "hdd=hdd-1"
 for i in $(seq 0 $hdd);do
-    echo "i="$i
+    #echo "i="$i
     if [ "$i" -lt $hdd ] ;then
 	hdd_list=${hdd_list}"'hdd${i}':'ssd0',"
     else
