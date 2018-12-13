@@ -1,15 +1,21 @@
 #!/bin/bash
 file="hosts.ini"
 echo "[virtuozzo7]" > $file
+count=0
 while true; do
-echo "Add ip:"
-read ip
-if [ "$ip" == "" ] ;then
-    break
-fi
-#ip4=$(echo $ip|awk -F '.' '{print $4}')
-ip4=$ip
-echo "node${ip4} ansible_ssh_host=10.31.0.$ip cluster_vlan_network=\"{'vlan_id1':'31','vlan_id2':'11','address':'192.168.1.${ip4}','prefix':'24'}\" host_lic=\"RVZ.30004147.0002.txt\"" >> $file
+    echo "Add ip:"
+    read ip
+    if [ "$ip" == "" ] ;then
+        break
+    fi
+    if [ "$count" == "0" ] ;then
+	echo "Replace:"$ip
+	sed  -r -i 's/(\b[0-9]{1,3}\.){3}[0-9]{1,3}\b'/192.168.1.$ip/g deploy02.yml
+    fi
+    #ip4=$(echo $ip|awk -F '.' '{print $4}')
+    ip4=$ip
+    echo "node${ip4} ansible_ssh_host=10.31.0.$ip cluster_vlan_network=\"{'vlan_id1':'31','vlan_id2':'11','address':'192.168.1.${ip4}','prefix':'24'}\" host_lic=\"RVZ.30004147.0002.txt\"" >> $file
+    count=1
 done
 echo "" >> $file
 echo "[virtuozzo7:vars]" >> $file
