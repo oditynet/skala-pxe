@@ -11,6 +11,7 @@ while true; do
     if [ "$count" == "0" ] ;then
 	echo "Replace:"$ip
 	sed  -r -i 's/(\b[0-9]{1,3}\.){3}[0-9]{1,3}\b'/192.168.1.$ip/g deploy02.yml
+	sed  -r -i 's/(\b[0-9]{1,3}\.){3}[0-9]{1,3}\b'/192.168.1.$ip/g files/iperfc.sh
     fi
     #ip4=$(echo $ip|awk -F '.' '{print $4}')
     ip4=$ip

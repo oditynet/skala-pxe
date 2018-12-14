@@ -16,7 +16,7 @@
 - hosts: virtuozzo7[1:2]     
   tasks:
   - name: deploy the rest mds
-    shell: "echo 'Pa$$w0rd'|vstorage -c {{ my_cluster_name }} auth-node -b 192.168.1.22 -P; vstorage -c {{ my_cluster_name }} make-mds -a {{ cluster_vlan_network.address }} -r /vstorage/{{ my_cluster_name }}-{{ my_mds_index }}/mds"
+    shell: "echo 'Pa$$w0rd'|vstorage -c {{ my_cluster_name }} auth-node -b 192.168.1.56 -P; vstorage -c {{ my_cluster_name }} make-mds -a {{ cluster_vlan_network.address }} -r /vstorage/{{ my_cluster_name }}-{{ my_mds_index }}/mds"
   - systemd:
       name: vstorage-mdsd.target
       state: restarted
@@ -24,7 +24,7 @@
 - hosts: virtuozzo7[3:]
   tasks:
   - name: auth servers w/o mds  
-    shell: "echo 'Pa$$w0rd'|vstorage -c {{ my_cluster_name }} auth-node -b 192.168.1.22 -P"
+    shell: "echo 'Pa$$w0rd'|vstorage -c {{ my_cluster_name }} auth-node -b 192.168.1.56 -P"
 
 #- hosts: virtuozzo7
 #  tasks:
