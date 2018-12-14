@@ -1,2 +1,3 @@
 # skala-pxe
-new version skala-r pxe
+- New version skala-r pxe
+- New version KS config + ansible 
