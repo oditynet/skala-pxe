@@ -1,0 +1,116 @@
+¹1:
+
+en
+conf t
+no interface mgmt0 dhcp
+interface mgmt0 ip address 10.32.0.21 /24
+lacp
+ip routing vrf default
+protocol mlag
+dcb priority-flow-control enable force
+no spanning-tree
+interface port-channel 1
+exit
+vlan 11
+exit
+vlan 31
+exit
+vlan 4000
+exit
+interface port-channel 1 ipl 1
+interface ethernet 1/11-1/12 dcb priority-flow-control mode on force
+interface port-channel 1 dcb priority-flow-control mode on force
+interface vlan 4000 ip address 10.10.10.1 255.255.255.0
+interface vlan 4000 ipl 1 peer-address 10.10.10.2
+mlag system-mac 00:00:5E:00:01:8D
+mlag-vip SKALA ip 10.32.0.254 /24 force
+no mlag shutdown
+hostname SW-SKALA1
+interface mlag-port-channel 101-108
+exit
+interface ethernet 1/1 mlag-channel-group 101 mode active
+interface ethernet 1/2 mlag-channel-group 102 mode active
+interface ethernet 1/3 mlag-channel-group 103 mode active
+interface ethernet 1/4 mlag-channel-group 104 mode active
+interface ethernet 1/5 mlag-channel-group 105 mode active
+interface ethernet 1/6 mlag-channel-group 106 mode active
+interface ethernet 1/7 mlag-channel-group 107 mode active
+interface ethernet 1/8 mlag-channel-group 108 mode active
+interface ethernet 1/11-1/12 channel-group 1 mode active
+interface mlag-port-channel 101 switchport mode trunk
+interface mlag-port-channel 102 switchport mode trunk
+interface mlag-port-channel 103 switchport mode trunk
+interface mlag-port-channel 104 switchport mode trunk
+interface mlag-port-channel 105 switchport mode trunk
+interface mlag-port-channel 106 switchport mode trunk
+interface mlag-port-channel 107 switchport mode trunk
+interface mlag-port-channel 108 switchport mode trunk
+interface mlag-port-channel 101-108 no shutdown
+interface vlan 31 ip address 10.31.0.2 255.255.255.0
+protocol magp
+exit
+conf t
+interface vlan 31 magp 3
+exit
+interface vlan 31 magp 3 ip virtual-router address 10.31.0.1
+interface vlan 31 magp 3 ip virtual-router mac-address 00:00:5E:00:01:07
+wr mem
+
+¹2:
+
+en
+conf t
+no interface mgmt0 dhcp
+interface mgmt0 ip address 10.32.0.22 /24
+lacp
+ip routing vrf default
+protocol mlag
+dcb priority-flow-control enable force
+no spanning-tree
+interface port-channel 1
+exit
+vlan 11
+exit
+vlan 31
+exit
+vlan 4000
+exit
+interface port-channel 1 ipl 1
+interface ethernet 1/11-1/12 dcb priority-flow-control mode on force
+interface port-channel 1 dcb priority-flow-control mode on force
+interface vlan 4000 ip address 10.10.10.2 255.255.255.0
+interface vlan 4000 ipl 1 peer-address 10.10.10.1
+mlag system-mac 00:00:5E:00:01:8D
+mlag-vip SKALA ip 10.32.0.254 /24 force
+no mlag shutdown
+hostname SW-SKALA2
+interface mlag-port-channel 101-108
+exit
+interface ethernet 1/1 mlag-channel-group 101 mode active
+interface ethernet 1/2 mlag-channel-group 102 mode active
+interface ethernet 1/3 mlag-channel-group 103 mode active
+interface ethernet 1/4 mlag-channel-group 104 mode active
+interface ethernet 1/5 mlag-channel-group 105 mode active
+interface ethernet 1/6 mlag-channel-group 106 mode active
+interface ethernet 1/7 mlag-channel-group 107 mode active
+interface ethernet 1/8 mlag-channel-group 108 mode active
+interface ethernet 1/11-1/12 channel-group 1 mode active
+
+interface mlag-port-channel 101 switchport mode trunk
+interface mlag-port-channel 102 switchport mode trunk
+interface mlag-port-channel 103 switchport mode trunk
+interface mlag-port-channel 104 switchport mode trunk
+interface mlag-port-channel 105 switchport mode trunk
+interface mlag-port-channel 106 switchport mode trunk
+interface mlag-port-channel 107 switchport mode trunk
+interface mlag-port-channel 108 switchport mode trunk
+interface mlag-port-channel 101-108 no shutdown
+interface vlan 31 ip address 10.31.0.3 255.255.255.0
+protocol magp
+exit
+conf t
+interface vlan 31 magp 3
+exit
+interface vlan 31 magp 3 ip virtual-router address 10.31.0.1
+interface vlan 31 magp 3 ip virtual-router mac-address 00:00:5E:00:01:07
+wr mem
